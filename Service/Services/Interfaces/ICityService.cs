@@ -10,6 +10,9 @@ namespace Service.Services.Interfaces
 {
     public interface ICityService
     {
-        Task<IEnumerable<CityDto>> GetAll();
+        Task<IEnumerable<CityDto>> GetAllAsync();
+        Task<CityDto> GetByIdAsync(int id);
+        Task<CityDto> GetByNameAsync(string name);
+        Task CreateAsync(CityCreateDto model);
     }
 }

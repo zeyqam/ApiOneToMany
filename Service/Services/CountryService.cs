@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Repository.Repositories.Interfaces;
 using Service.DTOs.Admin.Countries;
 using Service.Services.Interfaces;
@@ -16,10 +17,12 @@ namespace Service.Services
     {
         private readonly ICountryRepoSitory _countryRepo;
         private readonly IMapper _mapper;
-        public CountryService(ICountryRepoSitory countryRepo, IMapper mapper)
+        private readonly ILogger<CountryService> _logger;
+        public CountryService(ICountryRepoSitory countryRepo, IMapper mapper,ILogger<CountryService> logger)
         {
             _countryRepo = countryRepo;
             _mapper = mapper;
+            _logger = logger;
         }
         public async Task CreateAsync(CountryCreateDto model)
         {
@@ -32,10 +35,17 @@ namespace Service.Services
 
         public async Task DeleteAsync(int? id)
         {
-            if(id is null) throw new ArgumentNullException();
+            if (id is null)
+            {
+                _logger.LogWarning("Id is null");
+                throw new ArgumentNullException();
+            }
             var existCountry = await _countryRepo.GetByIdAsync((int)id);
-            if (existCountry == null) throw new KeyNotFoundException("Country not found");
-
+            if (existCountry == null)
+            {
+                _logger.LogWarning("Data not found ");
+                throw new NullReferenceException();
+            }
             await _countryRepo.DeleteAsync(existCountry);
 
         }

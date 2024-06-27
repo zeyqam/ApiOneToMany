@@ -9,9 +9,13 @@ namespace App.Controllers.Admin
     public class CountryController : BaseController
     {
         private readonly ICountryService _countryService;
-        public CountryController(ICountryService countryService)
+        private readonly ILogger<CountryController> _logger;
+
+        public CountryController(ICountryService countryService,
+                                 ILogger<CountryController> logger)
         {
             _countryService = countryService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -19,6 +23,7 @@ namespace App.Controllers.Admin
         {
             try
             {
+                _logger.LogInformation("Country GetAll is working ");
                 return Ok(await _countryService.GetAllAsync());
             }
             catch (Exception ex)
@@ -46,6 +51,7 @@ namespace App.Controllers.Admin
         {
             try
             {
+                
                 var country = await _countryService.GetByIdAsync(id);
                 if (country == null) return NotFound();
                 return Ok(country);

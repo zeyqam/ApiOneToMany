@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Repository;
 using Service;
 using Repository.Data;
+using Serilog;
+using App.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +14,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 builder.Services.AddSwaggerGen();
 builder.Services.AddRepositoryLayer();
 builder.Services.AddServiceLayer();
+
+
 
 var app = builder.Build();
 
@@ -24,6 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

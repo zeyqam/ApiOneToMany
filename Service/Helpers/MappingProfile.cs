@@ -18,6 +18,7 @@ namespace Service.Helpers
             CreateMap<Country,CountryDto>();
             CreateMap<CountryEditDto, Country>();
             CreateMap<City, CityDto>().ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Name));
+            CreateMap<CityCreateDto, City>();
         }
     }
 }

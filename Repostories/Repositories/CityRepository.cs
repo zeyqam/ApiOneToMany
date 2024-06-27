@@ -17,7 +17,7 @@ namespace Repository.Repositories
             
         }
 
-        public async Task<IEnumerable<City>> GetAllWithCountry()
+        public async Task<IEnumerable<City>> GetAllWithCountryAsync()
         {
             return await _context.Cities.Include(m=>m.Country).ToListAsync();
         }
